@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     let eventData: Record<string, unknown> | null = null;
 
     if (event) {
-      eventData = event.toJSON();
+      eventData = event.toJSON() as Record<string, unknown>;
     } else {
       // Try external crusades
       const externalEvent = await fetchExternalCrusade(eventId);

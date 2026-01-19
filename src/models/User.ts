@@ -76,8 +76,7 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-// Index for faster lookups
-UserSchema.index({ email: 1 });
+// Index for faster lookups (email index already created by unique: true)
 UserSchema.index({ kingschat_username: 1 });
 
 // Virtual for id (returns string)
