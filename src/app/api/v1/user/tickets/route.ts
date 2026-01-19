@@ -32,9 +32,10 @@ async function fetchExternalCrusades(): Promise<ExternalCrusade[]> {
     const response = await fetch(EXTERNAL_CRUSADES_URL);
     if (response.ok) {
       const data = await response.json();
-      externalCrusadesCache = Array.isArray(data) ? data : (data.crusades || data.data || []);
+      const crusades: ExternalCrusade[] = Array.isArray(data) ? data : (data.crusades || data.data || []);
+      externalCrusadesCache = crusades;
       cacheTime = Date.now();
-      return externalCrusadesCache;
+      return crusades;
     }
   } catch (error) {
     console.error('Failed to fetch external crusades:', error);
