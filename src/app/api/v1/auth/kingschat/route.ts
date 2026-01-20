@@ -24,17 +24,18 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate input
-    const validator = validate(body).required('accessToken', 'Access token is required');
+    // Accept both access_token and accessToken for compatibility
+    const accessToken = body.access_token || body.accessToken;
 
-    if (validator.fails()) {
-      return Response.validationError(validator.errors());
+    // Validate input
+    if (!accessToken) {
+      return Response.validationError({ access_token: 'Access token is required' });
     }
 
     // Fetch user info from KingsChat
     const kingsResponse = await fetch(KINGSCHAT_API_URL, {
       headers: {
-        Authorization: `Bearer ${body.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json',
       },
     });

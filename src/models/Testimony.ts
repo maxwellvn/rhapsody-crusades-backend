@@ -68,12 +68,20 @@ TestimonySchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
+// Virtual for content (alias for text to match frontend)
+TestimonySchema.virtual('content').get(function () {
+  return this.text;
+});
+
 // Ensure virtuals are included in JSON
 TestimonySchema.set('toJSON', {
   virtuals: true,
   transform: (_, ret) => {
     const obj = ret as unknown as Record<string, unknown>;
     obj.id = (obj._id as mongoose.Types.ObjectId).toHexString();
+    // Map text to content for frontend compatibility
+    obj.content = obj.text;
+    delete obj.text;
     delete obj._id;
     delete obj.__v;
     return obj;

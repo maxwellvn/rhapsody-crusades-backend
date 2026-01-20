@@ -71,10 +71,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const body = await request.json();
 
+    // Accept both 'content' (frontend) and 'text' (legacy) field names
+    const testimonyText = body.content !== undefined ? body.content : body.text;
+
     // Validate input
     const validator = validate(body)
       .optional('title')
       .optional('text')
+      .optional('content')
       .optional('event_id')
       .optional('category_id')
       .optional('image');
@@ -103,7 +107,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update allowed fields
     if (body.title !== undefined) testimony.title = body.title;
-    if (body.text !== undefined) testimony.text = body.text;
+    if (testimonyText !== undefined) testimony.text = testimonyText;
     if (body.event_id !== undefined) testimony.event_id = body.event_id ? parseInt(body.event_id, 10) : undefined;
     if (body.category_id !== undefined) testimony.category_id = body.category_id ? parseInt(body.category_id, 10) : undefined;
     if (body.image !== undefined) testimony.image = body.image;

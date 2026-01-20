@@ -95,8 +95,11 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
+    // Accept both 'content' (frontend) and 'text' (legacy) field names
+    const testimonyText = body.content || body.text;
+
     // Validate input
-    const validator = validate(body)
+    const validator = validate({ ...body, text: testimonyText })
       .required('title', 'Title is required')
       .required('text', 'Testimony text is required')
       .optional('event_id')
@@ -113,7 +116,7 @@ export async function POST(request: NextRequest) {
     const testimony = await Testimony.create({
       user_id: auth.user!._id.toHexString(),
       title: body.title,
-      text: body.text,
+      text: testimonyText,
       event_id: body.event_id ? parseInt(body.event_id, 10) : undefined,
       category_id: body.category_id ? parseInt(body.category_id, 10) : undefined,
       image: body.image,
